@@ -1,0 +1,969 @@
+{
+	"info": {
+		"_postman_id": "finance-tracker-api-updated-collection",
+		"name": "Finance Tracker API - Updated",
+		"description": "Complete Finance Tracker Backend API collection with authentication, transactions, and analytics endpoints. Updated with correct schema and working examples.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "finance-tracker"
+	},
+	"item": [
+		{
+			"name": "🏥 Health & Info",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						},
+						"description": "Check API health and database connection status"
+					}
+				},
+				{
+					"name": "API Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": ["{{baseUrl}}"]
+						},
+						"description": "Get API information and available endpoints"
+					}
+				}
+			]
+		},
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('authToken', responseJson.token);",
+									"    pm.environment.set('userId', responseJson.user.id);",
+									"    console.log('✅ User registered and token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"securepassword123\",\n  \"name\": \"New User\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Register a new user account"
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('authToken', responseJson.token);",
+									"    pm.environment.set('userId', responseJson.user.id);",
+									"    console.log('✅ Logged in and token saved');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Login with existing user credentials"
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "me"]
+						},
+						"description": "Get current authenticated user information"
+					}
+				},
+				{
+					"name": "Check Auth Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "status"]
+						},
+						"description": "Check if user is authenticated"
+					}
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "logout"]
+						},
+						"description": "Logout current user"
+					}
+				}
+			]
+		},
+		{
+			"name": "💰 Transactions",
+			"item": [
+				{
+					"name": "Get All Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Get all transactions for the authenticated user"
+					}
+				},
+				{
+					"name": "Get Transactions (Filtered)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions?category=Food & Dining&type=expense&limit=50&offset=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"],
+							"query": [
+								{
+									"key": "category",
+									"value": "Food & Dining",
+									"description": "Filter by category"
+								},
+								{
+									"key": "type",
+									"value": "expense",
+									"description": "Filter by type (income/expense)"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-08-01T00:00:00.000Z",
+									"description": "Start date filter (ISO format)",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "2025-08-31T23:59:59.999Z",
+									"description": "End date filter (ISO format)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Number of results to return"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of results to skip"
+								}
+							]
+						},
+						"description": "Get transactions with filtering options"
+					}
+				},
+				{
+					"name": "Parse Transaction with AI",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"input\": \"Spent $25 on lunch at McDonald's today\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/parse",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions", "parse"]
+						},
+						"description": "Parse natural language input into transaction data using AI"
+					}
+				},
+				{
+					"name": "Create Transaction (Basic)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('lastTransactionId', responseJson.id);",
+									"    console.log('✅ Transaction created:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 12.50,\n  \"description\": \"Coffee at Starbucks\",\n  \"category\": \"Food & Dining\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Create a basic transaction without date"
+					}
+				},
+				{
+					"name": "Create Transaction (Complete)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('lastTransactionId', responseJson.id);",
+									"    console.log('✅ Complete transaction created:', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 25.50,\n  \"description\": \"Lunch at restaurant\",\n  \"category\": \"Food & Dining\",\n  \"type\": \"expense\",\n  \"date\": \"2025-08-30T10:00:00.000Z\",\n  \"confidence\": 0.95\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Create a complete transaction with all fields"
+					}
+				},
+				{
+					"name": "Update Transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 30.00,\n  \"description\": \"Updated lunch expense\",\n  \"category\": \"Food & Dining\",\n  \"type\": \"expense\",\n  \"date\": \"2025-08-30T10:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/{{lastTransactionId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions", "{{lastTransactionId}}"]
+						},
+						"description": "Update an existing transaction"
+					}
+				},
+				{
+					"name": "Delete Transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/{{lastTransactionId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions", "{{lastTransactionId}}"]
+						},
+						"description": "Delete a transaction"
+					}
+				},
+				{
+					"name": "Get Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions", "categories"]
+						},
+						"description": "Get all available transaction categories"
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Analytics",
+			"item": [
+				{
+					"name": "Get Financial Summary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/summary",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "summary"]
+						},
+						"description": "Get financial summary for current month including income, expenses, savings, and monthly change"
+					}
+				},
+				{
+					"name": "Get Spending by Categories (Monthly)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/categories?period=month",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "categories"],
+							"query": [
+								{
+									"key": "period",
+									"value": "month",
+									"description": "Time period: month, quarter, or year"
+								}
+							]
+						},
+						"description": "Get spending breakdown by categories with percentages"
+					}
+				},
+				{
+					"name": "Get Spending by Categories (Quarterly)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/categories?period=quarter",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "categories"],
+							"query": [
+								{
+									"key": "period",
+									"value": "quarter"
+								}
+							]
+						},
+						"description": "Get quarterly spending breakdown by categories"
+					}
+				},
+				{
+					"name": "Get Spending by Categories (Yearly)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/categories?period=year",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "categories"],
+							"query": [
+								{
+									"key": "period",
+									"value": "year"
+								}
+							]
+						},
+						"description": "Get yearly spending breakdown by categories"
+					}
+				},
+				{
+					"name": "Get Spending Trends (30 days)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/trends?days=30",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "trends"],
+							"query": [
+								{
+									"key": "days",
+									"value": "30",
+									"description": "Number of days to analyze (default: 30)"
+								}
+							]
+						},
+						"description": "Get daily spending trends over specified number of days"
+					}
+				},
+				{
+					"name": "Get Spending Trends (60 days)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/trends?days=60",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "trends"],
+							"query": [
+								{
+									"key": "days",
+									"value": "60"
+								}
+							]
+						},
+						"description": "Get spending trends for last 60 days"
+					}
+				},
+				{
+					"name": "Get Monthly Comparison",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/analytics/monthly-comparison",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "analytics", "monthly-comparison"]
+						},
+						"description": "Compare current month spending vs previous month by categories"
+					}
+				}
+			]
+		},
+		{
+			"name": "🧪 Example Workflows",
+			"item": [
+				{
+					"name": "Create Income Transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 3500.00,\n  \"description\": \"Monthly salary\",\n  \"category\": \"Income\",\n  \"type\": \"income\",\n  \"date\": \"2025-08-30T10:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Example: Create an income transaction"
+					}
+				},
+				{
+					"name": "Create Food & Dining Expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 45.50,\n  \"description\": \"Dinner at Italian restaurant\",\n  \"category\": \"Food & Dining\",\n  \"type\": \"expense\",\n  \"date\": \"2025-08-30T19:30:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Example: Create a food & dining expense"
+					}
+				},
+				{
+					"name": "Create Groceries Expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 125.75,\n  \"description\": \"Weekly grocery shopping at Walmart\",\n  \"category\": \"Groceries\",\n  \"type\": \"expense\",\n  \"date\": \"2025-08-30T14:30:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Example: Create a groceries expense"
+					}
+				},
+				{
+					"name": "Create Transportation Expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 65.25,\n  \"description\": \"Gas station fill-up\",\n  \"category\": \"Transportation\",\n  \"type\": \"expense\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Example: Create a transportation expense"
+					}
+				},
+				{
+					"name": "Create Shopping Expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 89.99,\n  \"description\": \"New shirt from Amazon\",\n  \"category\": \"Shopping\",\n  \"type\": \"expense\",\n  \"date\": \"2025-08-30T16:45:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Example: Create a shopping expense"
+					}
+				},
+				{
+					"name": "Create Bills & Utilities Expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 150.00,\n  \"description\": \"Monthly electricity bill\",\n  \"category\": \"Bills & Utilities\",\n  \"type\": \"expense\",\n  \"date\": \"2025-08-30T09:00:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"]
+						},
+						"description": "Example: Create a bills & utilities expense"
+					}
+				},
+				{
+					"name": "Parse Natural Language Transaction",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"input\": \"Bought coffee for $4.50 at Starbucks this morning\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/parse",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions", "parse"]
+						},
+						"description": "Example: Parse natural language into transaction data"
+					}
+				},
+				{
+					"name": "Get Food & Dining Transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions?category=Food & Dining&type=expense",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "transactions"],
+							"query": [
+								{
+									"key": "category",
+									"value": "Food & Dining"
+								},
+								{
+									"key": "type",
+									"value": "expense"
+								}
+							]
+						},
+						"description": "Example: Get only Food & Dining expense transactions"
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('📡 Making request to:', pm.request.url.toString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"console.log('📊 Response status:', pm.response.code, pm.response.status);"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001",
+			"type": "string"
+		}
+	]
+}
