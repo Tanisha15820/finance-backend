@@ -50,18 +50,31 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Required for Render PostgreSQL
+//   },
+// });
+
+// // Test DB connection
+// pool.connect()
+//   .then(() => console.log("✅ Connected to PostgreSQL (Render)"))
+//   .catch(err => console.error("❌ DB connection error:", err));
+
+// Database connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Required for Render PostgreSQL
-  },
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DATABASE,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
 });
 
 // Test DB connection
 pool.connect()
-  .then(() => console.log("✅ Connected to PostgreSQL (Render)"))
+  .then(() => console.log("✅ Connected to PostgreSQL"))
   .catch(err => console.error("❌ DB connection error:", err));
-
 
 // Routes
 app.get("/", (req, res) => {
