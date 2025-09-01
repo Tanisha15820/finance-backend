@@ -46,10 +46,14 @@ router.post('/register', [
       token,
       message: 'User registered successfully'
     });
-  } catch (error) {
-    console.error('User registration error:', error);
-    res.status(500).json({ error: 'Registration failed' });
-  }
+ } catch (error) {
+  console.error('User registration error:', error);
+  res.status(500).json({ 
+    error: 'Registration failed',
+    details: error.message || error 
+  });
+}
+
 });
 
 // POST /auth/login - Login user
@@ -60,25 +64,35 @@ router.post('/login', [
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Login validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
+    console.log('Login attempt for email:', email);
     
     // Get user by email (includes password_hash)
     const user = await getUserByEmail(email);
     if (!user) {
+      console.log('User not found for email:', email);
       return res.status(401).json({ error: 'Invalid email or password' });
     }
+    
+    console.log('User found, verifying password...');
     
     // Verify password
     const isValidPassword = await comparePassword(password, user.password_hash);
     if (!isValidPassword) {
+      console.log('Invalid password for email:', email);
       return res.status(401).json({ error: 'Invalid email or password' });
     }
     
+    console.log('Password verified, generating token...');
+    
     // Generate JWT token
     const token = generateToken(user.id);
+    
+    console.log('Login successful for user:', user.email);
     
     res.json({
       user: {
@@ -91,8 +105,15 @@ router.post('/login', [
       message: 'Login successful'
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Login failed' });
+    console.error('Login error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    res.status(500).json({ 
+      error: 'Login failed',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 
