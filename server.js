@@ -40,6 +40,10 @@ const corsOptions = {
     'http://127.0.0.1:5175',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    // Vercel deployment URLs
+    'https://finance-frontend.vercel.app',
+    'https://finance-frontend-git-main.vercel.app',
+    'https://finance-frontend-tanisha15820.vercel.app',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true,
