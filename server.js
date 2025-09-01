@@ -13,6 +13,9 @@ const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 
+// ✅ Trust proxy (important for Render/Heroku/etc.)
+app.set("trust proxy", 1);
+
 // Security middleware
 app.use(helmet());
 
@@ -56,9 +59,6 @@ const pool = new Pool({
     rejectUnauthorized: false
   }
 });
-
-
-
 
 // Test DB connection
 pool.connect()
