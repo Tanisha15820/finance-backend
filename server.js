@@ -19,7 +19,7 @@ app.use(helmet());
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per window
+  max: 100, // limit each IP to 100 requests per windowMs
   message: { error: 'Too many requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false
@@ -31,6 +31,12 @@ const corsOptions = {
   origin: [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
+    'http://localhost:5174', 
+    'http://127.0.0.1:5174',
+    'http://localhost:5175',
+    'http://127.0.0.1:5175',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
     process.env.FRONTEND_URL
   ].filter(Boolean),
   credentials: true,
@@ -43,27 +49,23 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection (Render PostgreSQL)
-// Database connection with SSL for Render
+// Database connection
 const pool = new Pool({
-  user: process.env.PG_USER,
-  host: process.env.PG_HOST,
-  database: process.env.PG_DATABASE,
-  password: process.env.PG_PASSWORD,
-  port: process.env.PG_PORT,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // this is required for Render PostgreSQL
-  },
+    rejectUnauthorized: false
+  }
 });
+
 
 
 
 // Test DB connection
 pool.connect()
-  .then(() => console.log("✅ Connected to PostgreSQL (Render)"))
+  .then(() => console.log("✅ Connected to PostgreSQL"))
   .catch(err => console.error("❌ DB connection error:", err));
 
-// Root route
+// Routes
 app.get("/", (req, res) => {
   res.json({ 
     message: "🚀 Finance Tracker API is running!",
@@ -76,7 +78,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check
+// Health check endpoint
 app.get("/health", async (req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -111,7 +113,6 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
